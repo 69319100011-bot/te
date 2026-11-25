@@ -1,0 +1,6 @@
+{
+  "name": "คลังเงิน — ระบบบันทึกรายรับ-รายจ่าย",
+  "description": "เว็บจัดการรายรับรายจ่ายรายเดือน พร้อมกราฟวิเคราะห์ข้อมูล เก็บข้อมูลบน Firebase (69319100011DB) และเข้าสู่ระบบด้วย Gmail",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,212 @@
+{
+  "entities": {
+    "UserLedger": {
+      "title": "UserLedger",
+      "description": "Private user ledger profile and default monthly budget configuration stored under 69319100011DB.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID of the ledger owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name from Google/Gmail sign-in.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified Gmail/Google email address of the owner.",
+          "minLength": 3,
+          "maxLength": 254
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Profile photo URL from Google account.",
+          "minLength": 0,
+          "maxLength": 512
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code for formatting.",
+          "enum": ["THB"]
+        },
+        "defaultMonthlyBudget": {
+          "type": "number",
+          "description": "Default monthly expense budget target in THB."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the ledger was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the ledger was last updated."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "email",
+        "photoURL",
+        "currency",
+        "defaultMonthlyBudget",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "An income or expense record belonging to a user ledger.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "type": {
+          "type": "string",
+          "description": "Transaction direction.",
+          "enum": ["income", "expense"]
+        },
+        "amount": {
+          "type": "number",
+          "description": "Positive transaction amount in THB."
+        },
+        "category": {
+          "type": "string",
+          "description": "Transaction category name.",
+          "minLength": 1,
+          "maxLength": 50
+        },
+        "title": {
+          "type": "string",
+          "description": "Short item or description title.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional detailed note.",
+          "minLength": 0,
+          "maxLength": 300
+        },
+        "date": {
+          "type": "string",
+          "description": "Transaction date in YYYY-MM-DD format.",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "monthKey": {
+          "type": "string",
+          "description": "Year-month bucket in YYYY-MM format for monthly summaries.",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment channel used for the transaction.",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the record was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the record was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "type",
+        "amount",
+        "category",
+        "title",
+        "note",
+        "date",
+        "monthKey",
+        "paymentMethod",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "MonthlyBudget": {
+      "title": "MonthlyBudget",
+      "description": "Monthly expense budget limit for a specific YYYY-MM period.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner Firebase Auth UID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "monthKey": {
+          "type": "string",
+          "description": "Target month in YYYY-MM format.",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$"
+        },
+        "limitAmount": {
+          "type": "number",
+          "description": "Monthly expense limit in THB."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the budget was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the budget was last updated."
+        }
+      },
+      "required": [
+        "userId",
+        "monthKey",
+        "limitAmount",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/69319100011DB/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserLedger"
+      },
+      "description": "Private user ledger profile and default budget configuration under collection 69319100011DB."
+    },
+    "/69319100011DB/{userId}/transactions/{transactionId}": {
+      "schema": {
+        "$ref": "#/entities/Transaction"
+      },
+      "description": "Income and expense transactions owned by the authenticated user."
+    },
+    "/69319100011DB/{userId}/budgets/{monthKey}": {
+      "schema": {
+        "$ref": "#/entities/MonthlyBudget"
+      },
+      "description": "Per-month expense budget targets keyed by YYYY-MM."
+    }
+  }
+}
